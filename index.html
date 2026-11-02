@@ -694,8 +694,9 @@ input[type=color]{width:44px;height:38px;padding:2px;border:1.5px solid var(--li
         <section class="admin-page hide" id="ap-siswa">
           <div class="card">
             <h2 style="margin:0 0 4px;font-size:1rem;">Kelola Data Siswa</h2>
-            <p style="margin:0 0 14px;font-size:.8rem;color:var(--muted);">Import massal via Excel (kolom: Nama, Kelas) atau tambah manual.</p>
+            <p style="margin:0 0 14px;font-size:.8rem;color:var(--muted);">Import massal via Excel (kolom: Nama, Kelas, Tempat Tanggal Lahir, Alamat) atau tambah manual.</p>
             <label class="field">Import dari Excel</label>
+            <button class="btn btn-outline sm" id="btnUnduhTemplate" type="button" style="margin-bottom:8px;">⬇️ Unduh Template</button>
             <input type="file" id="fileExcel" accept=".xlsx,.xls,.csv">
             <div class="field-gap"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -1607,6 +1608,19 @@ document.querySelectorAll('.admin-nav button').forEach(btn=>{
 });
 
 /* ================= DATA SISWA CRUD ================= */
+document.getElementById('btnUnduhTemplate').addEventListener('click', ()=>{
+  const rows = [
+    ['Nama','Kelas','Tempat Tanggal Lahir','Alamat'],
+    ['Ahmad Fauzi','VII-A','Muara Bungo, 12 Mei 2010','Jl. Contoh No. 1, Muara Bungo'],
+    ['Siti Aisyah','VII-B','Jambi, 3 Agustus 2011','Jl. Merdeka No. 5, Muara Bungo']
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [{wch:28},{wch:10},{wch:28},{wch:40}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Data Siswa');
+  XLSX.writeFile(wb, 'template-data-siswa.xlsx');
+  toast('Template diunduh — hapus 2 baris contoh sebelum mengisi');
+});
 document.getElementById('btnAddSiswa').addEventListener('click', async ()=>{
   if(!sb){ toast('Supabase belum dikonfigurasi'); return; }
   const nama = document.getElementById('inpNama').value.trim();
